@@ -6,12 +6,13 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 import matplotlib.pyplot as plt
 from sklearn.cluster import AgglomerativeClustering
 
-
-file_loc = 'C:/Users/chernandez/Documents/SMTIDX.xlsx'
+# Pulling the file
+file_loc = 'documents\your_file.xlsx'
 df = pd.read_excel(file_loc, index_col = None, na_values= ['NA'], usecols = "B")
-
 df = df.values.tolist()
 
+
+#Levenshtein Distance Calculator
 def minimumEditDistance(s1, s2):
 
     if len(s1) > len(s2):
@@ -28,21 +29,24 @@ def minimumEditDistance(s1, s2):
     return distances[-1]
 
 
-dino = np.zeros((len(df), len(df)), dtype=np.int)
-3
+levenshteinMatrix = np.zeros((len(df), len(df)), dtype=np.int)
+
+#Populating the Matrix with levenshtein values, only doing a half of the matrix to save time
 for i in range(0, len(df)):
     print(i)
     for j in range(0, i):
         char1 = max(df[i],key=len)
         char2 = max(df[j],key=len)
         distance = minimumEditDistance(char1, char2)
-        dino[i, j] = distance
+        theMatrix[i, j] = distance
 
-dinosaur = np.maximum(dino,dino.transpose())
+levMatrixTrans = np.maximum(dino,dino.transpose())
 
-simpleMatrix = squareform(dinosaur)
+#duplicating the Matrix across the other half
+reducedMatrix = squareform(levMatrixTrans)
 
-Z = linkage(simpleMatrix, 'ward')
+#Implementing the Hierarchical Clustering
+Z = linkage(reducedMatrix, 'ward')
 
 theNum = 150
 
